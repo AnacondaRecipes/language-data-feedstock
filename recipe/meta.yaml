@@ -42,6 +42,7 @@ about:
   home: https://github.com/georgkrause/language_data
   license: MIT
   license_file: LICENSE
+  license_family: MIT
   summary: Supplementary data about languages used by the langcodes module
   description: |
     language_data is a supplement to the langcodes module,
