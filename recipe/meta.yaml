@@ -6,38 +6,50 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/language_data-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name|replace("-", "_") }}-{{ version }}.tar.gz
   sha256: 7600ef8aa39555145d06c89f0c324bf7dab834ea0b0a439d8243762e3ebad7ec
 
 build:
-  noarch: python
-  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  number: 1
+  number: 0
+  skip: true  # [py<39]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
 
 requirements:
   host:
-    - python {{ python_min }}
+    - python
     - setuptools >=60
     - setuptools-scm >=8.0
+    - wheel
     - pip
   run:
-    - python >={{ python_min }}
-    - marisa-trie >=0.7.7
+    - python
+    - marisa-trie >=1.1.0
 
 test:
   imports:
     - language_data
-  commands:
-    - pip check
+    - language_data.name_data
+    - language_data.names
+    - language_data.registry_parser
+    - language_data.util
   requires:
     - pip
-    - python {{ python_min }}
+  commands:
+    - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
 
 about:
   home: https://github.com/georgkrause/language_data
-  summary: Supplementary data about languages used by the langcodes module
   license: MIT
   license_file: LICENSE
+  summary: Supplementary data about languages used by the langcodes module
+  description: |
+    language_data is a supplement to the langcodes module,
+    for working with standardized codes for human languages.
+    It stores the more bulky and hard-to-index data about languages,
+    particularly what they are named in various languages.
+  dev_url: https://github.com/georgkrause/language_data
+  doc_url: https://github.com/georgkrause/language_data/blob/main/README.md
 
 extra:
   recipe-maintainers:
